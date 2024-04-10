@@ -61,4 +61,4 @@ async function getAnswer(question) {
     );
     console.log(answer)
 }
-getAnswer(`create Gallery image with state`)
+getAnswer(`upload IPFS image with state`)
