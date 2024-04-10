@@ -3,8 +3,13 @@ import {
     RecursiveCharacterTextSplitter,
 } from "langchain/text_splitter";
 import { readFileSync } from "fs"
+import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
+import { HNSWLib } from 'langchain/vectorstores/hnswlib'
+import { } from 'dotenv/config'
 
-export const load = async () => {
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+
+console.log(OPENAI_API_KEY)
     const overview = readFileSync('../data/bos/overview.md', { encoding: 'utf8', flag: 'r' });
     const quickstart = readFileSync('../data/bos/tutorial/quickstart.md', { encoding: 'utf8', flag: 'r' });
     const helloNear = readFileSync('../data/bos/tutorial/hello-near.md', { encoding: 'utf8', flag: 'r' });
@@ -16,8 +21,9 @@ export const load = async () => {
         chunkSize: 500,
         chunkOverlap: 0,
     });
-    const output = await splitter.createDocuments([overview,quickstart,helloNear,helloLido,designSystem,bosEthersjs,bosEthersjsBestPractices]);
+    const docs = await splitter.createDocuments([overview, quickstart, helloNear, helloLido, designSystem, bosEthersjs, bosEthersjsBestPractices]);
 
-    console.log(JSON.stringify(output));
-};
-load();
+    
+    const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings({apiKey:OPENAI_API_KEY}));
+  
+    vectorStore.save(`BOS`);
