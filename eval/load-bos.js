@@ -7,6 +7,8 @@ import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { HNSWLib } from 'langchain/vectorstores/hnswlib'
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { TextLoader } from "langchain/document_loaders/fs/text";
+import { MintBaseLoader } from './blockchain/mbapi.js'
+
 import { } from 'dotenv/config'
 
 
@@ -95,9 +97,9 @@ const jsData = [
     }
 ]
 let jsLoader = []
-for(const data of jsData){
-    
-   jsLoader.push(data.js) 
+for (const data of jsData) {
+
+    jsLoader.push(data.js)
 }
 const javascriptSplitter = RecursiveCharacterTextSplitter.fromLanguage("js", {
     chunkSize: 2000,
@@ -108,12 +110,12 @@ const docs = await javascriptSplitter.createDocuments(jsLoader);
 const REPO_PATH = "../data/bos/js";
 const loader = new DirectoryLoader(REPO_PATH, {
     ".js": (path) => new TextLoader(path),
-  });
-  const docs3 = await loader.load();
+});
+const docs2 = await loader.load();
 
-const texts = await javascriptSplitter.splitDocuments(docs3);
+const texts = await javascriptSplitter.splitDocuments(docs2);
 
-console.log(texts)
+
 const overview = readFileSync('../data/bos/overview.md', { encoding: 'utf8', flag: 'r' });
 const quickstart = readFileSync('../data/bos/tutorial/quickstart.md', { encoding: 'utf8', flag: 'r' });
 const helloNear = readFileSync('../data/bos/tutorial/hello-near.md', { encoding: 'utf8', flag: 'r' });
@@ -132,9 +134,17 @@ const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
     chunkSize: 500,
     chunkOverlap: 0,
 });
-const docs1 = await splitter.createDocuments([overview, quickstart, helloNear, helloLido, designSystem, bosEthersjs, bosEthersjsBestPractices,near,builtinComponents,notifications,primitives,social,state,webMethods]);
+const docs1 = await splitter.createDocuments([overview, quickstart, helloNear, helloLido, designSystem, bosEthersjs, bosEthersjsBestPractices, near, builtinComponents, notifications, primitives, social, state, webMethods]);
+const blockchainType = {
+    NEAR_MAINNET: "mainnet",
+    NEAR_TESTNET: "testnet",
+};
+const loaderMintbase = new MintBaseLoader(["mint.yearofchef.near"], "omni-site", blockchainType.NEAR_MAINNET);
+const docs3 = await loaderMintbase.load();
+
 docs.concat(docs1)
+docs.concat(docs2)
 docs.concat(docs3)
+
 const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings({ apiKey: OPENAI_API_KEY }));
-HNSWLib
 vectorStore.save(`BOS-js`);

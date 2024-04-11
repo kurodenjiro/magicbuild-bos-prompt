@@ -1,7 +1,7 @@
 const contract = "hello.near-examples.near";
 const greeting = Near.view(contract, "get_greeting", {});
 
-// Define components
+// intergrati
 const greetingForm = (
   <>
     <div className="border border-black p-3">
