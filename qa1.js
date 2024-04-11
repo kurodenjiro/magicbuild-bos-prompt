@@ -92,4 +92,4 @@ async function getAnswer(question) {
     );
     console.log(answer)
 }
-getAnswer(`what is nft.yearofchef.near?`)
+getAnswer(`create button with near call?`)
