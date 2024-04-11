@@ -21,7 +21,6 @@ const jsonData = JSON.parse(rawData);
 // Extract the 'content' field from each item
 const contentArray = jsonData.map(item => item.content);
 
-
 let jsLoader = []
 for (const data of jsonData) {
     console.log(data.content)
