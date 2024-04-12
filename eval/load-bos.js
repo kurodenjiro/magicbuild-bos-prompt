@@ -5,6 +5,7 @@ import {
 import { readFileSync } from "fs"
 import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
 import { HNSWLib } from 'langchain/vectorstores/hnswlib'
+import { MintBaseLoader } from './blockchain/mbapi.js'
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import fs from 'fs';
@@ -60,17 +61,14 @@ const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
     chunkOverlap: 0,
 });
 const docs1 = await splitter.createDocuments([overview, quickstart, helloNear, helloLido, designSystem, bosEthersjs, bosEthersjsBestPractices, near, builtinComponents, notifications, primitives, social, state, webMethods]);
-// const blockchainType = {
-//     NEAR_MAINNET: "mainnet",
-//     NEAR_TESTNET: "testnet",
-// };
-// const loaderMintbase = new MintBaseLoader(["mint.yearofchef.near"], "omni-site", blockchainType.NEAR_MAINNET);
-// const docs3 = await loaderMintbase.load();
-
-docs.concat(docs1)
+const blockchainType = {
+    NEAR_MAINNET: "mainnet",
+    NEAR_TESTNET: "testnet",
+};
+const loaderMintbase = new MintBaseLoader(["mint.yearofchef.near"], "omni-site", blockchainType.NEAR_MAINNET);
+const docs3 = await loaderMintbase.load();
 //docs.concat(docs2)
 
-//docs.concat(docs3)
-
-const vectorStore = await HNSWLib.fromDocuments(docs, new OpenAIEmbeddings({ apiKey: OPENAI_API_KEY }));
+const mergeDocs = docs.concat(docs3).concat(docs1)
+const vectorStore = await HNSWLib.fromDocuments(mergeDocs, new OpenAIEmbeddings({ apiKey: OPENAI_API_KEY }));
 vectorStore.save(`BOS-js`);

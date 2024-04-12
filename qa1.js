@@ -61,4 +61,4 @@ async function getAnswer(question) {
     );
     console.log(answer)
 }
-getAnswer(`create label get data from url :https://jsonplaceholder.typicode.com/todos/1 with state`)
+getAnswer(`create image tag mint.yearofchef.near`)
