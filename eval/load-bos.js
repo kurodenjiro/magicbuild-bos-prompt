@@ -22,24 +22,19 @@ const jsonData = JSON.parse(rawData);
 // Extract the 'content' field from each item
 const contentArray = jsonData.map(item => item.content);
 
-let jsLoader = []
-for (const data of jsonData) {
-    console.log(data.content)
-    jsLoader.push(data.content)
-}
 const javascriptSplitter = RecursiveCharacterTextSplitter.fromLanguage("js", {
     chunkSize: 2000,
     chunkOverlap: 200,
 });
-const docs = await javascriptSplitter.createDocuments(jsLoader);
+const docs = await javascriptSplitter.createDocuments(contentArray);
 // Define the path to the repo to perform RAG on.
-// const REPO_PATH = "../data/bos/js";
-// const loader = new DirectoryLoader(REPO_PATH, {
-//     ".js": (path) => new TextLoader(path),
-// });
-// const docs2 = await loader.load();
+const REPO_PATH = "../data/bos/js";
+const loader = new DirectoryLoader(REPO_PATH, {
+    ".js": (path) => new TextLoader(path),
+});
+const docs2 = await loader.load();
 
-//const texts = await javascriptSplitter.splitDocuments(docs2);
+const texts = await javascriptSplitter.splitDocuments(docs2);
 
 
 const overview = readFileSync('../data/bos/overview.md', { encoding: 'utf8', flag: 'r' });
@@ -47,8 +42,8 @@ const quickstart = readFileSync('../data/bos/tutorial/quickstart.md', { encoding
 const helloNear = readFileSync('../data/bos/tutorial/hello-near.md', { encoding: 'utf8', flag: 'r' });
 const helloLido = readFileSync('../data/bos/tutorial/hello-lido.md', { encoding: 'utf8', flag: 'r' });
 const designSystem = readFileSync('../data/bos/tutorial/design-system.md', { encoding: 'utf8', flag: 'r' });
-const bosEthersjs = readFileSync('../data/bos/tutorial/bos-ethersjs.md', { encoding: 'utf8', flag: 'r' });
-const bosEthersjsBestPractices = readFileSync('../data/bos/tutorial/bos-ethersjs-best-practices.md', { encoding: 'utf8', flag: 'r' });
+//const bosEthersjs = readFileSync('../data/bos/tutorial/bos-ethersjs.md', { encoding: 'utf8', flag: 'r' });
+//const bosEthersjsBestPractices = readFileSync('../data/bos/tutorial/bos-ethersjs-best-practices.md', { encoding: 'utf8', flag: 'r' });
 const near = readFileSync('../data/bos/api/near.md', { encoding: 'utf8', flag: 'r' });
 const builtinComponents = readFileSync('../data/bos/api/builtin-components.md', { encoding: 'utf8', flag: 'r' });
 const notifications = readFileSync('../data/bos/api/notifications.md', { encoding: 'utf8', flag: 'r' });
@@ -60,7 +55,7 @@ const splitter = RecursiveCharacterTextSplitter.fromLanguage("markdown", {
     chunkSize: 500,
     chunkOverlap: 0,
 });
-const docs1 = await splitter.createDocuments([overview, quickstart, helloNear, helloLido, designSystem, bosEthersjs, bosEthersjsBestPractices, near, builtinComponents, notifications, primitives, social, state, webMethods]);
+const docs1 = await splitter.createDocuments([overview, quickstart, helloNear, helloLido, designSystem, near, builtinComponents, notifications, primitives, social, state, webMethods]);
 const blockchainType = {
     NEAR_MAINNET: "mainnet",
     NEAR_TESTNET: "testnet",
@@ -69,6 +64,6 @@ const loaderMintbase = new MintBaseLoader(["mint.yearofchef.near"], "omni-site",
 const docs3 = await loaderMintbase.load();
 //docs.concat(docs2)
 
-const mergeDocs = docs.concat(docs3).concat(docs1)
+const mergeDocs = docs.concat(docs2).concat(docs3)
 const vectorStore = await HNSWLib.fromDocuments(mergeDocs, new OpenAIEmbeddings({ apiKey: OPENAI_API_KEY }));
 vectorStore.save(`BOS-js`);
