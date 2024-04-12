@@ -31,6 +31,8 @@ function saveDataToJSON(data) {
 
 const extractedData = readJSFilesAndExtractData('../data/bos/js');
 const extractedData1 = readJSFilesAndExtractData('../data/bos/demo-js');
+const extractedData2 = readJSFilesAndExtractData('../data/bos/Button');
+const extractedData3 = readJSFilesAndExtractData('../data/bos/Form');
 
-const mergeData = extractedData.concat(extractedData1)
+const mergeData = extractedData.concat(extractedData1).concat(extractedData2).concat(extractedData3)
 saveDataToJSON(mergeData);

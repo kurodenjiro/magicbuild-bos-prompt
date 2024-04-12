@@ -1,4 +1,4 @@
-// An examle func conpoment
+// function conpoment
 function Magic(props) {
     return <div>Magic: {props.children}</div>;
 }

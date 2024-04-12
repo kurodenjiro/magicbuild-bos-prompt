@@ -17,16 +17,16 @@ import {
 import { formatDocumentsAsString } from "langchain/util/document";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const model = new OpenAI({ apiKey: OPENAI_API_KEY, temperature: 0.9 });
+const model = new OpenAI({ apiKey: OPENAI_API_KEY, temperature: 0.1 });
 
 
 async function getAnswer(question) {
     const BOS = `
+    
     initState({ amount: "1", poolId: "zavodil.poolv1.near" });
     
     const onStakeClick = () => {
       const gas = 300 * 1000000000000;
-      // TODO: doesn't support floats right now due to limitation of JS integers
       const deposit = parseInt(state.amount) + "000000000000000000000000";
       console.log(gas, deposit);
       Near.call(state.poolId, "deposit_and_stake", {}, gas, deposit);
@@ -34,7 +34,7 @@ async function getAnswer(question) {
     
     return (
       <div>
-        <!--FIX (1): Change label to "Hello near"-->
+      <!--FIX (1): Change Stake Near to donate.potlock.near-->
         <h1>Stake NEAR</h1>
         <p>
           Pool: <input value={state.poolId} />
@@ -55,7 +55,7 @@ async function getAnswer(question) {
     const vectorStoreRetriever = vectorStore.asRetriever();
 
     // Create a system & human prompt for the chat model
-    const SYSTEM_TEMPLATE = `You're a frontend web developer that specializes in BOS. Given a description or an image, generate HTML with bootstrap. It should render nicely on desktop, tablet, and mobile. Keep your responses concise and just return HTML that would appear in the <body> no need for <head> . Use placehold.co for placeholder images. If the user asks for interactivity, use modern ES6 javascript and BOS component to handle events.
+    const SYSTEM_TEMPLATE = `You're a frontend web developer that specializes in BOS. Given a description or an image, generate JSX code using HTML with bootstrap. It should render nicely on desktop, tablet, and mobile. Keep your responses concise and just return HTML that would appear in the <body> no need for <head> . Use placehold.co for placeholder images. If the user asks for interactivity, use modern ES6 javascript and BOS component to handle events.
     Do not use React component , The Document Object or vanilla javascript.
 
     {context}
@@ -85,4 +85,4 @@ async function getAnswer(question) {
     );
     console.log(answer)
 }
-getAnswer(`Fix code at address comment`)
+getAnswer(`Address the FIX comments.`)
