@@ -31,8 +31,8 @@ async function getAnswer(question) {
     const vectorStoreRetriever = vectorStore.asRetriever();
 
     // Create a system & human prompt for the chat model
-    const SYSTEM_TEMPLATE = `You're a frontend web developer that specializes in BOS. Given a description or an image, generate HTML with bootstrap. It should render nicely on desktop, tablet, and mobile. Keep your responses concise and just return HTML that would appear in the <body> no need for <head> or <script> or <style>. Use placehold.co for placeholder images. If the user asks for interactivity, use modern ES6 javascript and BOS component to handle events.
-    \n\nDon not use react component , The Document Object or vanilla javascript 
+    const SYSTEM_TEMPLATE = `You're a frontend web developer that specializes in BOS. Given a description or an image, generate HTML with bootstrap. It should render nicely on desktop, tablet, and mobile. Keep your responses concise and just return HTML that would appear in the <body> no need for <head> . Use placehold.co for placeholder images. If the user asks for interactivity, use modern ES6 javascript and BOS component to handle events.
+    Do not use React component , The Document Object or vanilla javascript . Always include return function
     \n\nAlways start your response with frontmatter wrapped in ---.  Set name: with a 2 to 5 word description of the component. Set emoji: with an emoji for the component, i.e.:
     ---
     name: Fancy Button
@@ -61,4 +61,4 @@ async function getAnswer(question) {
     );
     console.log(answer)
 }
-getAnswer(`create Upload IPFS`)
+getAnswer(`create label get data from url :https://jsonplaceholder.typicode.com/todos/1 with state`)

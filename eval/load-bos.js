@@ -13,7 +13,7 @@ import { } from 'dotenv/config'
 
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const filePath = '../data/bos/js/data.json'; 
+const filePath = '../data/bos/output.json'; 
 
 const rawData = fs.readFileSync(filePath, 'utf8');
 const jsonData = JSON.parse(rawData);
@@ -32,7 +32,7 @@ const javascriptSplitter = RecursiveCharacterTextSplitter.fromLanguage("js", {
 });
 const docs = await javascriptSplitter.createDocuments(jsLoader);
 // Define the path to the repo to perform RAG on.
-const REPO_PATH = "../data/bos/js";
+// const REPO_PATH = "../data/bos/js";
 // const loader = new DirectoryLoader(REPO_PATH, {
 //     ".js": (path) => new TextLoader(path),
 // });
