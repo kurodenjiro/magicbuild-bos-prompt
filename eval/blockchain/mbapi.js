@@ -67,7 +67,7 @@ export class MintBaseLoader extends BaseDocumentLoader {
                 alt="${output.nft_contract_id}"
               />
               <div class="card-body">
-                <h5 class="card-title">Card title</h5>
+                <h5 class="card-title">${output.title}</h5>
                 <p class="card-text">
                   ${output.description}
                 </p>

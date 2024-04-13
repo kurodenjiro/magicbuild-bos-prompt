@@ -27,7 +27,7 @@ async function getAnswer(question) {
 
     // STEP 1: Load the vector store
     const vectorStore = await HNSWLib.load(
-        "./eval/BOS-js",
+        "./eval/BOS",
         new OpenAIEmbeddings({ apiKey: OPENAI_API_KEY }),
     );
 

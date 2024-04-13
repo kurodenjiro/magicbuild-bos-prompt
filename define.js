@@ -21,11 +21,31 @@ const model = new OpenAI({ apiKey: OPENAI_API_KEY, temperature: 0.3 });
 
 async function getAnswer(question) {
 
-    // STEP 1: Load the vector store
+    // Load Mintbase VectorDB
+    const mintbaseStore = await HNSWLib.load(
+        "./eval/mintbase",
+        new OpenAIEmbeddings({ openAIApiKey: OPENAI_API_KEY }),
+    );
+    // Search for the most similar document
+
+    // Load the vector store BOS
     const vectorStore = await HNSWLib.load(
-        "./eval/BOS-js",
+        "./eval/BOS",
         new OpenAIEmbeddings({ apiKey: OPENAI_API_KEY }),
     );
+
+    // Add docs to vectorDB BOS
+    const retrieverNFT = await mintbaseStore.similaritySearchWithScore(question, 3);
+    let docsNFT = []
+    for (const retriever of retrieverNFT) {
+        console.log(retriever[1])
+        if (retriever[1] < 0.2) {
+            console.log("docs",retriever)
+            docsNFT.push(retriever[0])   
+        }
+    }
+    vectorStore.addDocuments(docsNFT)
+
 
     // Initialize a retriever wrapper around the vector store
     const vectorStoreRetriever = vectorStore.asRetriever();
@@ -64,4 +84,4 @@ async function getAnswer(question) {
     );
     console.log(answer)
 }
-getAnswer(`create button with style and state`)
+getAnswer(`create image tag with nft.mintbase.near`)
