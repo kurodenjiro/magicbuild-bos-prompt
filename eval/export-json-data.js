@@ -29,10 +29,19 @@ function saveDataToJSON(data) {
     console.log(`Data saved to ${jsonFilePath}`);
 }
 
-const extractedData = readJSFilesAndExtractData('../data/bos/js');
-const extractedData1 = readJSFilesAndExtractData('../data/bos/demo-js');
-const extractedData2 = readJSFilesAndExtractData('../data/bos/Button');
-const extractedData3 = readJSFilesAndExtractData('../data/bos/Form');
+const extractedData = readJSFilesAndExtractData('../data/bos/components');
+const extractedData1 = readJSFilesAndExtractData('../data/bos/components-with-near/near.call');
+const extractedData2 = readJSFilesAndExtractData('../data/bos/components-with-near/near.view');
+const extractedData3 = readJSFilesAndExtractData('../data/bos/components-with-social/social.get');
+const extractedData4 = readJSFilesAndExtractData('../data/bos/components-with-social/social.set');
+const extractedData5 = readJSFilesAndExtractData('../data/bos/components-with-state');
+const extractedData6 = readJSFilesAndExtractData('../data/bos/function');
 
-const mergeData = extractedData.concat(extractedData1).concat(extractedData2).concat(extractedData3)
+const mergeData = extractedData
+.concat(extractedData1)
+.concat(extractedData2)
+.concat(extractedData3)
+.concat(extractedData4)
+.concat(extractedData5)
+.concat(extractedData6)
 saveDataToJSON(mergeData);

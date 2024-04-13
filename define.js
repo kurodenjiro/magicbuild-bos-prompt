@@ -17,7 +17,7 @@ import {
 import { formatDocumentsAsString } from "langchain/util/document";
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const model = new OpenAI({ apiKey: OPENAI_API_KEY, temperature: 0.3 });
+const model = new OpenAI({ apiKey: OPENAI_API_KEY, temperature: 0.1 });
 
 async function getAnswer(question) {
 
@@ -35,16 +35,17 @@ async function getAnswer(question) {
     );
 
     // Add docs to vectorDB BOS
-    const retrieverNFT = await mintbaseStore.similaritySearchWithScore(question, 3);
+    const retrieverNFT = await mintbaseStore.similaritySearchWithScore(question, 10);
     let docsNFT = []
     for (const retriever of retrieverNFT) {
-        console.log(retriever[1])
         if (retriever[1] < 0.2) {
-            console.log("docs",retriever)
-            docsNFT.push(retriever[0])   
+            docsNFT.push(retriever[0])
         }
     }
-    vectorStore.addDocuments(docsNFT)
+    if (docsNFT.length > 0) {
+        vectorStore.addDocuments(docsNFT)
+    }
+
 
 
     // Initialize a retriever wrapper around the vector store
@@ -84,4 +85,4 @@ async function getAnswer(question) {
     );
     console.log(answer)
 }
-getAnswer(`create image tag with nft.mintbase.near`)
+getAnswer(`create dance button`)

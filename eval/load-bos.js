@@ -27,11 +27,11 @@ const javascriptSplitter = RecursiveCharacterTextSplitter.fromLanguage("js", {
 });
 const docs = await javascriptSplitter.createDocuments(contentArray);
 // Define the path to the repo to perform RAG on.
-const REPO_PATH = "../data/bos/js";
-const loader = new DirectoryLoader(REPO_PATH, {
-    ".js": (path) => new TextLoader(path),
-});
-const docs2 = await loader.load();
+// const path1 = "../data/bos/components";
+// const loader = new DirectoryLoader(components, {
+//     ".js": (path) => new TextLoader(path),
+// });
+// const docs1 = await loader.load();
 
 // const texts = await javascriptSplitter.splitDocuments(docs2);
 // const overview = readFileSync('../data/bos/overview.md', { encoding: 'utf8', flag: 'r' });
@@ -60,6 +60,6 @@ const docs2 = await loader.load();
 
 //docs.concat(docs2)
 
-const mergeDocs = docs.concat(docs2)
+const mergeDocs = docs
 const vectorStore = await HNSWLib.fromDocuments(mergeDocs, new OpenAIEmbeddings({ apiKey: OPENAI_API_KEY }));
 vectorStore.save(`BOS`);
