@@ -19,8 +19,17 @@ import { formatDocumentsAsString } from "langchain/util/document";
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const model = new OpenAI({ apiKey: OPENAI_API_KEY, temperature: 0.1 });
 
-async function getAnswer(question) {
 
+
+async function getAnswer() {
+    let question_arg = process.argv.slice(2);
+    let question = ""
+    if(question_arg[0]){
+        question = question_arg[0]
+    }else{
+        question= "create dance button"
+    }
+    console.log(question_arg[0]);
     // Load Mintbase VectorDB
     const mintbaseStore = await HNSWLib.load(
         "./eval/mintbase",
@@ -61,6 +70,7 @@ async function getAnswer(question) {
     emoji: 🎉
     ---
 
+    
     return {context}
     
     `
@@ -85,4 +95,4 @@ async function getAnswer(question) {
     );
     console.log(answer)
 }
-getAnswer(`create dance button`)
+getAnswer()
