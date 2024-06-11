@@ -4,14 +4,14 @@ import { HNSWLib } from "langchain/vectorstores/hnswlib";
 import { RetrievalQAChain, loadQARefineChain } from "langchain/chains";
 import { } from 'dotenv/config'
 import {
-    RunnablePassthrough,
-    RunnableSequence,
+  RunnablePassthrough,
+  RunnableSequence,
 } from "@langchain/core/runnables";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 import {
-    ChatPromptTemplate,
-    HumanMessagePromptTemplate,
-    SystemMessagePromptTemplate,
+  ChatPromptTemplate,
+  HumanMessagePromptTemplate,
+  SystemMessagePromptTemplate,
 } from "@langchain/core/prompts";
 
 import { formatDocumentsAsString } from "langchain/util/document";
@@ -21,8 +21,12 @@ const model = new OpenAI({ apiKey: OPENAI_API_KEY, temperature: 0.1 });
 
 
 async function getAnswer(question) {
-    const BOS = `
-    
+  let bos_arg = process.argv.slice(2);
+  let BOS = ''
+  if (bos_arg[0]) {
+    BOS = bos_arg[0]
+  } else {
+    BOS = `
     initState({ amount: "1", poolId: "zavodil.poolv1.near" });
     
     const onStakeClick = () => {
@@ -45,44 +49,46 @@ async function getAnswer(question) {
         <a onClick={onStakeClick}>Stake</a>
       </div>
     );`
-    // STEP 1: Load the vector store
-    const vectorStore = await HNSWLib.load(
-        "./eval/BOS",
-        new OpenAIEmbeddings({ apiKey: OPENAI_API_KEY }),
-    );
+  }
+  
+  // STEP 1: Load the vector store
+  const vectorStore = await HNSWLib.load(
+    "./eval/BOS",
+    new OpenAIEmbeddings({ apiKey: OPENAI_API_KEY }),
+  );
 
-    // Initialize a retriever wrapper around the vector store
-    const vectorStoreRetriever = vectorStore.asRetriever();
+  // Initialize a retriever wrapper around the vector store
+  const vectorStoreRetriever = vectorStore.asRetriever();
 
-    // Create a system & human prompt for the chat model
-    const SYSTEM_TEMPLATE = `You're a frontend web developer that specializes in BOS. Given a description or an image, generate JSX code using HTML with bootstrap. It should render nicely on desktop, tablet, and mobile. Keep your responses concise and just return HTML that would appear in the <body> no need for <head> . Use placehold.co for placeholder images. If the user asks for interactivity, use modern ES6 javascript and BOS component to handle events.
+  // Create a system & human prompt for the chat model
+  const SYSTEM_TEMPLATE = `You're a frontend web developer that specializes in BOS. Given a description or an image, generate JSX code using HTML with bootstrap. It should render nicely on desktop, tablet, and mobile. Keep your responses concise and just return HTML that would appear in the <body> no need for <head> . Use placehold.co for placeholder images. If the user asks for interactivity, use modern ES6 javascript and BOS component to handle events.
     Do not use React component , The Document Object or vanilla javascript.
 
     {context}
 
     `
-    // STEP 3: Get the answer
-    const messages = [
-        SystemMessagePromptTemplate.fromTemplate(SYSTEM_TEMPLATE),
-        HumanMessagePromptTemplate.fromTemplate(`Given the following BOS:
+  // STEP 3: Get the answer
+  const messages = [
+    SystemMessagePromptTemplate.fromTemplate(SYSTEM_TEMPLATE),
+    HumanMessagePromptTemplate.fromTemplate(`Given the following BOS:
         
-        ${BOS.replaceAll('{','{{').replaceAll('}','}}')}
+        ${BOS.replaceAll('{', '{{').replaceAll('}', '}}')}
         
         {question}`),
-    ];
-    const prompt = ChatPromptTemplate.fromMessages(messages);
-    const chain = RunnableSequence.from([
-        {
-            context: vectorStoreRetriever.pipe(formatDocumentsAsString),
-            question: new RunnablePassthrough(),
-        },
-        prompt,
-        model,
-        new StringOutputParser(),
-    ]);
-    const answer = await chain.invoke(
-        question
-    );
-    console.log(answer)
+  ];
+  const prompt = ChatPromptTemplate.fromMessages(messages);
+  const chain = RunnableSequence.from([
+    {
+      context: vectorStoreRetriever.pipe(formatDocumentsAsString),
+      question: new RunnablePassthrough(),
+    },
+    prompt,
+    model,
+    new StringOutputParser(),
+  ]);
+  const answer = await chain.invoke(
+    question
+  );
+  console.log(answer)
 }
 getAnswer(`Address the FIX comments.`)
