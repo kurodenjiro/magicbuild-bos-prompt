@@ -1,3 +1,11 @@
-#Feature:
-## automatically generate code from contract method Near.Call / Near.View
-## trycatch to check conpoment work
+#Setup:
+```
+npm i
+.env OPENAI_API_KEY=<Your Open API Key>
+```
+#How to 
+```
+node define.js "create dance button"// to create components for Bos
+node fix-inline // 
+
+```
